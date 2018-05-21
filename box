@@ -1,0 +1,49 @@
+# 定义Box类，描述bounding box的坐标
+class Box():
+    def __init__(self, x, y, w, h):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+
+# 计算两个box在某个轴上的重叠部分
+# x1是box1的中心在该轴上的坐标
+# len1是box1在该轴上的长度
+# x2是box2的中心在该轴上的坐标
+# len2是box2在该轴上的长度
+# 返回值是该轴上重叠的长度
+
+def overlap(x1, len1, x2, len2):
+    len1_half = len1 / 2
+    len2_half = len2 / 2
+
+    left = max(x1 - len1_half, x2 - len2_half)
+    right = min(x1 + len1_half, x2 + len2_half)
+
+    return right - left
+
+# 计算box a 和box b 的交集面积
+# a和b都是Box类型实例
+# 返回值area是box a 和box b 的交集面积
+def box_intersection(a, b):
+    w = overlap(a.x, a.w, b.x, b.w)
+    h = overlap(a.y, a.h, b.y, b.h)
+    if w < 0 or h < 0:
+        return 0
+
+    area = w * h
+    return area
+
+# 计算 box a 和 box b 的并集面积
+# a和b都是Box类型实例
+# 返回值u是box a 和box b 的并集面积
+def box_union(a, b):
+    i = box_intersection(a, b)
+    u = a.w * a.h + b.w * b.h - i
+    return u
+
+# 计算 box a 和 box b 的 iou
+# a和b都是Box类型实例
+# 返回值是box a 和box b 的iou
+def box_iou(a, b):
+    return box_intersection(a, b) / box_union(a, b)
